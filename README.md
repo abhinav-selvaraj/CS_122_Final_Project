@@ -2,6 +2,11 @@
 CS122 Final Project
 
 Project Title:
+
 Authors:
+
 Description:
+
 Outline/Plan:
+
+See Root Directory for .gitignore
