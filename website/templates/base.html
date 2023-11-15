@@ -3,5 +3,77 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        
     </head>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+    
+    header {
+        background-color: #333;
+        color: #fff;
+        padding: 1em;
+        text-align: center;
+    }
+    
+    main {
+        padding: 2em;
+    }
+    
+    form {
+        text-align: center;
+        margin-bottom: 2em;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1em;
+    }
+    
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    
+    th {
+        background-color: #333;
+        color: #fff;
+    }
+    
+    footer {
+        background-color: #333;
+        color: #fff;
+        padding: 1em;
+        text-align: center;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+    }
+    </style>
+    <body>
+        <header>
+            <h1>Stock Market Analysis</h1>
+        </header>
+
+      
+        
+        <div id="table_content">
+            {% block content %}
+            <a href="/TestAPI"><button>Navigate to IBM Test Data</button></a> 
+            
+            {% endblock %}
+        </div>
+
+
+        <footer>
+            &copy; Abhinav Selvaraj & Carissa Lee
+        </footer>
+    </body>
+
 </html>
