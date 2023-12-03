@@ -1,14 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
-<a href="/"><button>Home</button></a> 
-<main>
-    <form>
-        <label for="symbol">Stock Name (This is test data from IBM):</label>
-        <input type="text" id="symbol" name="symbol" required>
-        <button type="submit">Submit</button>
-    </form>
+<a href="/"><button>Home</button></a>
 
+
+
+<main>
+    <header> {{symbol}} </header>
+    <form>
+        <label for="symbol">Stock Name:</label>
+        <select id="symbol" name="symbol" required onchange="changeData()">
+            {% for symbol in symbols %}
+            <option value="{{ symbol }}">{{ symbol }}</option>
+            {% endfor %}
+        </select>
+
+    </form>
+    
     <table>
         <thead>
             <tr>
@@ -20,22 +28,42 @@
                 <th>Volume</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="tableBody">
             <!-- Stock market data will be displayed here dynamically -->
-            {% for date, data in data['Time Series (Daily)'].items() %}                
-                <tr>
-                    <td>{{date}}</td>
-                    <td>{{ data['1. open'] }}</td>
-                    <td>{{ data['2. high'] }}</td>
-                    <td>{{ data['3. low'] }}</td>
-                    <td>{{ data['4. close'] }}</td>
-                    <td>{{ data['5. volume'] }}</td>
-                </tr>
-            {% endfor %}    
+            {% for date, data in data['Time Series (Daily)'].items() %}
+            <tr>
+                <td>{{date}}</td>
+                <td>{{ data['1. open'] }}</td>
+                <td>{{ data['2. high'] }}</td>
+                <td>{{ data['3. low'] }}</td>
+                <td>{{ data['4. close'] }}</td>
+                <td>{{ data['5. volume'] }}</td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        // Get the value of the 'symbol' parameter from the URL
+        var urlParams = new URLSearchParams(window.location.search);
+        var selectedSymbol = urlParams.get('symbol');
 
-    
+        // Set the selected option in the dropdown
+        var symbolDropdown = document.getElementById('symbol');
+        if (selectedSymbol) {
+            symbolDropdown.value = selectedSymbol;
+        }
+    });
+        function changeData() {
+            var selectedSymbol = document.getElementById('symbol').value;
+
+            // Set the new URL based on the selected symbol
+            var newUrl = '/RawData/' + selectedSymbol;
+
+            // Navigate to the new URL
+            window.location.href = newUrl;
+        }
+    </script>
+
 </main>
 {% endblock %}
-
