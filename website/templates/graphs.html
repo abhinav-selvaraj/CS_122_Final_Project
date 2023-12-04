@@ -4,35 +4,60 @@
 <main>
 
     <a href="/RawData/AAPL"><button>Navigate to Data Table</Table></button></a>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"> </script>
-        <!-- Stock Selection Dropdown -->
-        <form>
-            <label for="symbol">Stock Name:</label>
-            <select id="symbol" name="symbol" required onchange="changeData()">
-                {% for symbol in symbols %}
-                <option value="{{ symbol }}">{{ symbol }}</option>
-                {% endfor %}
-            </select>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"> </script>
+    <!-- Stock Selection Dropdown -->
+    <form>
+        <label for="symbol">Stock Name:</label>
+        <select id="symbol" name="symbol" required onchange="changeData()">
+            {% for symbol in symbols %}
+            <option value="{{ symbol }}">{{ symbol }}</option>
+            {% endfor %}
+        </select>
 
-        </form>
-        
-        <canvas id="stockChart" style="width:100%;max-width:1000px"></canvas>
+    </form>
+
+    <div style="display: flex; justify-content: space-between;">
+
+        <div style="width: 48%;">
+            <canvas id="stockChart" style="width: 100%; max-width: 1000px;"></canvas>
+        </div>
+
+        <div style="width: 48%;">
+            <canvas id="barChart" style="width: 100%; max-width: 1000px;"></canvas>
+        </div>
+
+    </div>
+
+    <label>
+        Show Open
+        <input type="checkbox" id="toggleOpen" >
+    </label>
+    <label>
+        Show High
+        <input type="checkbox" id="toggleHigh" >
+    </label>
+    <label>
+        Show Low
+        <input type="checkbox" id="toggleLow" >
+    </label>
+    <label>
+
         <script>
             const xValues = [];
             const openValues = [];
             const highValues = [];
             const lowValues = [];
-            const closeValues =[];
+            const closeValues = [];
             const volumeValues = [];
 
             {% for date, data in data['Time Series (Daily)'].items() %}
-                
-                xValues.push("{{ date[5:]}}");
-                openValues.push("{{data['1. open']}}");
-                highValues.push("{{ data['2. high'] }}")
-                lowValues.push("{{ data['3. low'] }}")
-                closeValues.push("{{ data['4. close'] }}")
-                volumeValues.push("{{ data['5. volume'] }}")
+
+            xValues.push("{{ date[5:]}}");
+            openValues.push("{{data['1. open']}}");
+            highValues.push("{{ data['2. high'] }}")
+            lowValues.push("{{ data['3. low'] }}")
+            closeValues.push("{{ data['4. close'] }}")
+            volumeValues.push("{{ data['5. volume'] }}")
             {% endfor %}
 
             xValues.reverse();
@@ -41,12 +66,15 @@
             lowValues.reverse();
             closeValues.reverse();
             volumeValues.reverse();
-            
-            new Chart("stockChart", {
+
+
+            //Chart for Stock Value
+
+           var stockChart =  new Chart("stockChart", {
                 type: "line",
                 data: {
                     labels: xValues,
-                    
+
                     datasets: [
                         //Open Values = Gray
                         {
@@ -55,9 +83,9 @@
                             lineTension: 0,
                             backgroundColor: "rgba(108,122,137,.5)",
                             borderColor: "rgba(108,122,137,.5)",
-                            pointRadius: 2,
+                            pointRadius: 0,
                             data: openValues,
-                            showLine:false
+                            showLine: false
                         },
                         //High Values = Red
                         {
@@ -66,9 +94,9 @@
                             lineTension: 0,
                             backgroundColor: "rgba(100,0,0,.5)",
                             borderColor: "rgba(100,0,0,.5)",
-                            pointRadius: 2,
+                            pointRadius: 0,
                             data: highValues,
-                            showLine:false
+                            showLine: false
                         },
                         //Low Values = Blue
                         {
@@ -77,9 +105,9 @@
                             lineTension: 0,
                             backgroundColor: "rgba(0,0,100,.5)",
                             borderColor: "rgba(0,0,100,.5)",
-                            pointRadius: 2,
+                            pointRadius: 0,
                             data: lowValues,
-                            showLine:false
+                            showLine: false
                         },
 
                         //Close Values = Green
@@ -92,46 +120,103 @@
                             pointRadius: 2,
                             data: closeValues
                         },
-                    
-                        
 
-                ]
+
+
+                    ]
                 },
                 options: {
-                    legend: { 
+                    legend: {
                         display: true,
-                        
+
                     },
                     scales: {
-                        
-                        yAxes: [{  ticks: {min: {{ min_val - 5 }}, max: {{ max_val +5 }},stepSize: 2
+
+                        yAxes: [{ ticks: { min: {{ min_val - 5 }}, max: {{ max_val + 5 }}, stepSize: 2
             } }],
                     }
                 }
             });
+
+
+           
+            //Bar Graph for volume traded 
+            new Chart("barChart", {
+                type: "bar",
+                data: {
+                    labels: xValues,
+
+                    datasets: [
+                        //Open Values = Gray
+                        {
+                            label: 'Volume Traded',
+                            fill: false,
+                            backgroundColor: "rgba(108,122,137,.5)",
+                            borderColor: "rgba(108,122,137,.5)",
+                            pointRadius: 2,
+                            data: volumeValues,
+
+                        },
+                    ]
+                },
+                options: {
+                    legend: {
+                        display: true,
+
+                    },
+                    scales: {
+
+                        yAxes: [{ ticks: { min: {{ min_vol }}, max: {{ max_vol }}, stepSize: 100
+                } }],
+                    }
+                }
+            });
         </script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-    // Get the value of the 'symbol' parameter from the URL
-    var urlParams = new URLSearchParams(window.location.search);
-    var selectedSymbol = urlParams.get('symbol');
+        <script>
+             document.getElementById('toggleOpen').addEventListener('change', function () {
+                if(this.checked == true)
+                    stockChart.data.datasets[0].pointRadius = 2;
+                else
+                    stockChart.data.datasets[0].pointRadius = 0;
+                stockChart.update();
+            });
 
-    // Set the selected option in the dropdown
-    var symbolDropdown = document.getElementById('symbol');
-    if (selectedSymbol) {
-        symbolDropdown.value = selectedSymbol;
-    }
-});
-    function changeData() {
-        var selectedSymbol = document.getElementById('symbol').value;
+            document.getElementById('toggleHigh').addEventListener('change', function () {
+                if(this.checked == true)
+                    stockChart.data.datasets[1].pointRadius = 2;
+                else
+                    stockChart.data.datasets[1].pointRadius = 0;
+                stockChart.update();
+            });
 
-        // Set the new URL based on the selected symbol
-        var newUrl = '/' + selectedSymbol;
+            document.getElementById('toggleLow').addEventListener('change', function () {
+                if(this.checked == true)
+                    stockChart.data.datasets[2].pointRadius = 2;
+                else
+                    stockChart.data.datasets[2].pointRadius = 0;
+                stockChart.update();
+            });
+            document.addEventListener('DOMContentLoaded', function () {
+                // Get the value of the 'symbol' parameter from the URL
+                var urlParams = new URLSearchParams(window.location.search);
+                var selectedSymbol = urlParams.get('symbol');
 
-        // Navigate to the new URL
-        window.location.href = newUrl;
-    }
-</script>
+                // Set the selected option in the dropdown
+                var symbolDropdown = document.getElementById('symbol');
+                if (selectedSymbol) {
+                    symbolDropdown.value = selectedSymbol;
+                }
+            });
+            function changeData() {
+                var selectedSymbol = document.getElementById('symbol').value;
+
+                // Set the new URL based on the selected symbol
+                var newUrl = '/' + selectedSymbol;
+
+                // Navigate to the new URL
+                window.location.href = newUrl;
+            }
+        </script>
 
 
 
