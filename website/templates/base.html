@@ -110,6 +110,28 @@
                 }
             });
         </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+            // Get the value of the 'symbol' parameter from the URL
+            var urlParams = new URLSearchParams(window.location.search);
+            var selectedSymbol = urlParams.get('symbol');
+    
+            // Set the selected option in the dropdown
+            var symbolDropdown = document.getElementById('symbol');
+            if (selectedSymbol) {
+                symbolDropdown.value = selectedSymbol;
+            }
+        });
+            function changeData() {
+                var selectedSymbol = document.getElementById('symbol').value;
+    
+                // Set the new URL based on the selected symbol
+                var newUrl = '/' + selectedSymbol;
+    
+                // Navigate to the new URL
+                window.location.href = newUrl;
+            }
+        </script>
         {% endblock %}
     </div>
 
