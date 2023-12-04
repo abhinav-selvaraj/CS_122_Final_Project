@@ -16,7 +16,133 @@
         </select>
 
     </form>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Financial Data Analysis</title>
+        <style>
+            table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+            th {
+                background-color: #f2f2f2;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Financial Data Analysis</h1>
     
+        <h2>Daily Price Trends</h2>
+        <p>Mean Close Price: {{ mean_close }}</p>
+        <p>Median Close Price: {{ median_close }}</p>
+        <p>Standard Deviation of Close Price: {{ std_close }}</p>
+    
+        <h2>Volatility Analysis</h2>
+        <p>Daily Volatility: {{ daily_volatility }}</p>
+    
+        <h2>Volume Analysis</h2>
+        <p>Correlation between Close Prices and Volumes: {{ correlation }}</p>
+    
+    </body>
+    <body>
+        <h1>Statistical Analysis by Timeframe</h1>
+    
+        <form>
+            <label for="timeframe">Select Timeframe:</label>
+            <select id="timeframe" name="timeframe">
+                <option value="weekly" {% if selected_timeframe == 'weekly' %}selected{% endif %}>Weekly</option>
+                <option value="monthly" {% if selected_timeframe == 'monthly' %}selected{% endif %}>Monthly</option>
+            </select>
+            <input type="submit" value="Submit">
+        </form>
+    
+        <h2>Statistical Analysis for {{ selectedtimeframe.capitalize() }} Data</h2>
+    
+        <table>
+            <tr>
+                <th>Period</th>
+                <th>Mean</th>
+                <th>Median</th>
+                <th>Standard Deviation</th>
+            </tr>
+            {% for period, stats in statistics.items() %}
+                <tr>
+                    <td>{{ period }}</td>
+                    <td>{{ stats.mean }}</td>
+                    <td>{{ stats.median }}</td>
+                    <td>{{ stats.std_dev }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{symbol}}</title>
+        <style>
+            table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+            th {
+                background-color: #333;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Statistical Summary</h1>
+    
+        <table>
+            <tr>
+                <th>Data Type</th>
+                <th>Minimum</th>
+                <th>Maximum</th>
+                <th>Standard Deviation</th>
+            </tr>
+            <tr>
+                <td>Open Prices</td>
+                <td>{{ min_open }}</td>
+                <td>{{ max_open }}</td>
+                <td>{{ std_open }}</td>
+            </tr>
+            <tr>
+                <td>High Prices</td>
+                <td>{{ min_high }}</td>
+                <td>{{ max_high }}</td>
+                <td>{{ std_high }}</td>
+            </tr>
+            <tr>
+                <td>Low Prices</td>
+                <td>{{ min_low }}</td>
+                <td>{{ max_low }}</td>
+                <td>{{ std_low }}</td>
+            </tr>
+            <tr>
+                <td>Close Prices</td>
+                <td>{{ min_close }}</td>
+                <td>{{ max_close }}</td>
+                <td>{{ std_close }}</td>
+            </tr>
+            <tr>
+                <td>Volumes</td>
+                <td>{{ min_volume }}</td>
+                <td>{{ max_volume }}</td>
+                <td>{{ std_volume }}</td>
+            </tr>
+        </table>
+
+    </body>
     <table>
         <thead>
             <tr>
