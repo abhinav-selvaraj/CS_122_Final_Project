@@ -41,6 +41,7 @@
             lowValues.reverse();
             closeValues.reverse();
             volumeValues.reverse();
+            
             new Chart("stockChart", {
                 type: "line",
                 data: {
@@ -49,6 +50,7 @@
                     datasets: [
                         //Open Values = Gray
                         {
+                            label: 'Open',
                             fill: false,
                             lineTension: 0,
                             backgroundColor: "rgba(108,122,137,.5)",
@@ -59,6 +61,7 @@
                         },
                         //High Values = Red
                         {
+                            label: 'High',
                             fill: false,
                             lineTension: 0,
                             backgroundColor: "rgba(100,0,0,.5)",
@@ -69,6 +72,7 @@
                         },
                         //Low Values = Blue
                         {
+                            label: 'Low',
                             fill: false,
                             lineTension: 0,
                             backgroundColor: "rgba(0,0,100,.5)",
@@ -80,6 +84,7 @@
 
                         //Close Values = Green
                         {
+                            label: 'Close',
                             fill: false,
                             lineTension: 0,
                             backgroundColor: "rgba(0,100,0,1)",
@@ -93,15 +98,40 @@
                 ]
                 },
                 options: {
-                    legend: { display: false },
+                    legend: { 
+                        display: true,
+                        
+                    },
                     scales: {
                         
-                        yAxes: [{ ticks: { min: 115, max: 150, stepSize:1 } }],
+                        yAxes: [{  ticks: {min: {{ min_val - 5 }}, max: {{ max_val +5 }},stepSize: 2
+            } }],
                     }
                 }
             });
         </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Get the value of the 'symbol' parameter from the URL
+    var urlParams = new URLSearchParams(window.location.search);
+    var selectedSymbol = urlParams.get('symbol');
 
+    // Set the selected option in the dropdown
+    var symbolDropdown = document.getElementById('symbol');
+    if (selectedSymbol) {
+        symbolDropdown.value = selectedSymbol;
+    }
+});
+    function changeData() {
+        var selectedSymbol = document.getElementById('symbol').value;
+
+        // Set the new URL based on the selected symbol
+        var newUrl = '/' + selectedSymbol;
+
+        // Navigate to the new URL
+        window.location.href = newUrl;
+    }
+</script>
 
 
 
