@@ -13,7 +13,7 @@ views = Blueprint('views', __name__)
 
 @views.route('/')
 def homePage():
-    symbols = ['AAPL', 'AMZN', 'AVGO','BRK-B', 'GOOG', 'HD' , 'IBM', 'JNJ', 'JPM', 'LLY', 'MA', 'META', 'MSFT', 'NVDA', 'PG', 'TSLA','TSM','UNH', 'V', 'XOM' ] 
+    symbols = ['Select a stock', 'AAPL', 'AMZN', 'AVGO','BRK-B', 'GOOG', 'HD' , 'IBM', 'JNJ', 'JPM', 'LLY', 'MA', 'META', 'MSFT', 'NVDA', 'PG', 'TSLA','TSM','UNH', 'V', 'XOM' ] 
     api_key = 'S1WA6956TYGOYFGH'
     current_time = datetime.now().time()
     print(current_time)
@@ -38,7 +38,7 @@ def homePage():
                 return "failed"  
       
 
-    return render_template('base.html' , stocks=symbols)
+    return render_template('base.html' , symbols=symbols)
 
 @views.route('/RawData/<symbol>')
 def data(symbol):
@@ -59,3 +59,13 @@ def data(symbol):
     return render_template('TestAPI.html', symbols=symbols, data=data, keyList=keyList, symbol=symbol)
   
 
+@views.route('/<symbol>')
+def graphPage(symbol):
+    filepath = f'CS_122_Final_Project/stockDataJsons/{symbol}_data.JSON'
+    with open(filepath, 'r') as file:
+        contents = json.load(file)
+        keyList = contents.keys()
+        data = contents
+
+    symbols = ['Select a stock', 'AAPL', 'AMZN', 'AVGO','BRK-B', 'GOOG', 'HD' , 'IBM', 'JNJ', 'JPM', 'LLY', 'MA', 'META', 'MSFT', 'NVDA', 'PG', 'TSLA','TSM','UNH', 'V', 'XOM' ] 
+    return render_template('graphs.html', symbols=symbols, keyList=keyList, data=data)
