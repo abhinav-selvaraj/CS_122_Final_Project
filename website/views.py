@@ -144,24 +144,34 @@ def calculate_statistics_for_period(data, period):
 @views.route('/<symbol>')
 def graphPage(symbol):
     val_arr = []
-    filepath = f'/Users/carissalee/CS_122_Final_Project/stockDataJsons/{symbol}_data.JSON'
+    vol_arr = []
+    filepath = f'CS_122_Final_Project/stockDataJsons/{symbol}_data.JSON'
     with open(filepath, 'r') as file:
         contents = json.load(file)
         keyList = contents.keys()
         data = contents
         for date, values in data['Time Series (Daily)'].items():
-             if '4. close' in values:  # Check if '4. close' key exists in the inner dictionary
+            if '4. close' in values:  # Check if '4. close' key exists in the inner dictionary
                 close_value = values['4. close']
                 val_arr.append(close_value)
+            if '5. volume' in values:  # Check if '4. close' key exists in the inner dictionary
+                close_value = values['5. volume']
+                vol_arr.append(close_value)
     
     val_arr = np.array(val_arr)
     val_arr = val_arr.astype(float)
     min_val = np.min(val_arr)
     max_val = np.max(val_arr)
     # print(val_arr)
-    
     # print(min_val)
     # print(max_val)
+    
+    vol_arr  = np.array(vol_arr)
+    vol_arr = vol_arr.astype(float)
+    
+    min_vol = np.min(vol_arr)
+    max_vol = np.max(vol_arr)
+
     symbols = ['Select a stock', 'AAPL', 'AMZN', 'AVGO','BRK-B', 'GOOG', 'HD' , 'IBM', 'JNJ', 'JPM', 'LLY', 'MA', 'META', 'MSFT', 'NVDA', 'PG', 'TSLA','TSM','UNH', 'V', 'XOM' ] 
 
-    return render_template('graphs.html', symbols=symbols, keyList=keyList, data=data, min_val=min_val, max_val=max_val)
+    return render_template('graphs.html', symbols=symbols, keyList=keyList, data=data, min_val=min_val, max_val=max_val, min_vol=min_vol, max_vol=max_vol)
