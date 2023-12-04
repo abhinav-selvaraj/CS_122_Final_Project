@@ -47,40 +47,43 @@
                     labels: xValues,
                     
                     datasets: [
-                        //Open Values
+                        //Open Values = Gray
+                        {
+                            fill: false,
+                            lineTension: 0,
+                            backgroundColor: "rgba(108,122,137,.5)",
+                            borderColor: "rgba(108,122,137,.5)",
+                            pointRadius: 2,
+                            data: openValues,
+                            showLine:false
+                        },
+                        //High Values = Red
+                        {
+                            fill: false,
+                            lineTension: 0,
+                            backgroundColor: "rgba(100,0,0,.5)",
+                            borderColor: "rgba(100,0,0,.5)",
+                            pointRadius: 2,
+                            data: highValues,
+                            showLine:false
+                        },
+                        //Low Values = Blue
+                        {
+                            fill: false,
+                            lineTension: 0,
+                            backgroundColor: "rgba(0,0,100,.5)",
+                            borderColor: "rgba(0,0,100,.5)",
+                            pointRadius: 2,
+                            data: lowValues,
+                            showLine:false
+                        },
+
+                        //Close Values = Green
                         {
                             fill: false,
                             lineTension: 0,
                             backgroundColor: "rgba(0,100,0,1)",
                             borderColor: "rgba(0,100,0,1)",
-                            pointRadius: 2,
-                            data: openValues
-                        },
-                        //High Values
-                        {
-                            fill: false,
-                            lineTension: 0,
-                            backgroundColor: "rgba(100,0,0,1)",
-                            borderColor: "rgba(100,0,0,1)",
-                            pointRadius: 2,
-                            data: highValues
-                        },
-                        //Low Values
-                        {
-                            fill: false,
-                            lineTension: 0,
-                            backgroundColor: "rgba(100,100,0,1)",
-                            borderColor: "rgba(100,100,0,1)",
-                            pointRadius: 2,
-                            data: lowValues
-                        },
-
-                        //Close Values
-                        {
-                            fill: false,
-                            lineTension: 0,
-                            backgroundColor: "rgba(100,100,100,1)",
-                            borderColor: "rgba(100,100,100,1)",
                             pointRadius: 2,
                             data: closeValues
                         },
@@ -93,7 +96,7 @@
                     legend: { display: false },
                     scales: {
                         
-                        yAxes: [{ ticks: { min: 0, max: 200, stepSize:25 } }],
+                        yAxes: [{ ticks: { min: 115, max: 150, stepSize:1 } }],
                     }
                 }
             });
