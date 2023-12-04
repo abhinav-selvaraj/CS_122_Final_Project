@@ -31,7 +31,7 @@
                 text-align: left;
             }
             th {
-                background-color: #f2f2f2;
+                background-color: #333;
             }
         </style>
     </head>
@@ -49,8 +49,6 @@
         <h2>Volume Analysis</h2>
         <p>Correlation between Close Prices and Volumes: {{ correlation }}</p>
     
-    </body>
-    <body>
         <h1>Statistical Analysis by Timeframe</h1>
     
         <form>
@@ -63,7 +61,10 @@
         </form>
     
         <h2>Statistical Analysis for {{ selectedtimeframe.capitalize() }} Data</h2>
-    
+        <h3>Linear Regression Trend for {{ selectedtimeframe.capitalize() }} Data</h3>
+
+        <p>Slope: {{ slope }}</p>
+        <p>Intercept: {{ intercept }}</p>
         <table>
             <tr>
                 <th>Period</th>
@@ -80,27 +81,7 @@
                 </tr>
             {% endfor %}
         </table>
-    </body>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{{symbol}}</title>
-        <style>
-            table {
-                border-collapse: collapse;
-                width: 100%;
-            }
-            th, td {
-                border: 1px solid #ddd;
-                padding: 8px;
-                text-align: left;
-            }
-            th {
-                background-color: #333;
-            }
-        </style>
-    </head>
-    <body>
+
         <h1>Statistical Summary</h1>
     
         <table>
@@ -141,7 +122,6 @@
                 <td>{{ std_volume }}</td>
             </tr>
         </table>
-
     </body>
     <table>
         <thead>

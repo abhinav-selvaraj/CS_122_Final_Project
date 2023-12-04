@@ -70,6 +70,13 @@ def data(symbol):
     close_prices_array = np.array(close_prices)
     volumes_array = np.array(volumes)
 
+    # Create X values (assuming sequential days)
+    x_values = np.arange(len(close_prices))
+
+    # Perform linear regression
+    slope, intercept = np.polyfit(x_values, close_prices, 1)
+
+
     # Calculate minimum, maximum, and standard deviation
     min_open = np.min(open_prices_array)
     max_open = np.max(open_prices_array)
@@ -105,17 +112,20 @@ def data(symbol):
     # Calculate correlation between closing prices and volumes
     correlation = np.corrcoef(close_prices, volumes)[0, 1]
     # Handle user input for timeframe
-    selectedtimeframe = request.args.get('timeframe', 'daily')
+    selectedtimeframe = request.args.get('timeframe', 'weekly')
 
     # Calculate statistics based on the selected timeframe
     if selectedtimeframe == 'weekly':
         statistics = calculate_statistics_for_period(close_prices, period=5)  # Assuming a week has 5 days
+        x_values, weekly_close_prices = aggregate_data_by_period(data["Time Series (Daily)"], period=5)
+        slope, intercept = calculate_linear_regression(x_values, weekly_close_prices)
     elif selectedtimeframe == 'monthly':
         statistics = calculate_statistics_for_period(close_prices, period=20)  # Assuming a month has 20 days
+        x_values, monthly_close_prices = aggregate_data_by_period(data["Time Series (Daily)"], period=20)
+        slope, intercept = calculate_linear_regression(x_values, monthly_close_prices)
     else:
         return "Invalid timeframe"
 
-    # Render the template with the calculated values and timeframe
     return render_template('TestAPI.html', symbols=symbols, data=data, keyList=keyList, symbol=symbol,
                            min_open=min_open, max_open=max_open, std_open=std_open,
                            min_high=min_high, max_high=max_high, std_high=std_high,
@@ -125,7 +135,8 @@ def data(symbol):
                            mean_close=mean_close,
                            median_close=median_close,
                            daily_volatility=daily_volatility,
-                           correlation=correlation, statistics=statistics, selectedtimeframe=selectedtimeframe)
+                           correlation=correlation, statistics=statistics, selectedtimeframe=selectedtimeframe,
+                           slope=slope, intercept=intercept)
 
 
 def calculate_statistics(data):
@@ -138,14 +149,33 @@ def calculate_statistics_for_period(data, period):
     statistics = {}
     for i in range(0, len(data), period):
         subset = data[i:i+period]
-        statistics[f'Week {i//period + 1}'] = calculate_statistics(subset)
+        statistics[f'{i//period + 1}'] = calculate_statistics(subset)
     return statistics
+
+def calculate_linear_regression(x_values, y_values):
+    X = np.column_stack((np.ones_like(x_values), x_values))
+    coefficients = np.linalg.lstsq(X, y_values, rcond=None)[0]
+    intercept, slope = coefficients
+    return slope, intercept
+
+def aggregate_data_by_period(time_series, period):
+    x_values = []
+    close_prices = []
+    current_period = 0
+    for date, data in sorted(time_series.items()):
+        current_period += 1
+        if current_period > period:
+            current_period = 1
+        x_values.append(current_period)
+        close_prices.append(float(data["4. close"]))
+
+    return np.array(x_values), np.array(close_prices)
 
 @views.route('/<symbol>')
 def graphPage(symbol):
     val_arr = []
     vol_arr = []
-    filepath = f'CS_122_Final_Project/stockDataJsons/{symbol}_data.JSON'
+    filepath = f'/Users/carissalee/CS_122_Final_Project/stockDataJsons/{symbol}_data.JSON'
     with open(filepath, 'r') as file:
         contents = json.load(file)
         keyList = contents.keys()
