@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main>
+
+    <a href="/RawData/AAPL"><button>Navigate to Data Table</Table></button></a>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"> </script>
+        <!-- Stock Selection Dropdown -->
+        <form>
+            <label for="symbol">Stock Name:</label>
+            <select id="symbol" name="symbol" required onchange="changeData()">
+                {% for symbol in symbols %}
+                <option value="{{ symbol }}">{{ symbol }}</option>
+                {% endfor %}
+            </select>
+
+        </form>
+        
+        <canvas id="stockChart" style="width:100%;max-width:1000px"></canvas>
+        <script>
+            const xValues = [];
+            const openValues = [];
+            const highValues = [];
+            const lowValues = [];
+            const closeValues =[];
+            const volumeValues = [];
+
+            {% for date, data in data['Time Series (Daily)'].items() %}
+                
+                xValues.push("{{ date[5:]}}");
+                openValues.push("{{data['1. open']}}");
+                highValues.push("{{ data['2. high'] }}")
+                lowValues.push("{{ data['3. low'] }}")
+                closeValues.push("{{ data['4. close'] }}")
+                volumeValues.push("{{ data['5. volume'] }}")
+            {% endfor %}
+
+            xValues.reverse();
+            openValues.reverse();
+            highValues.reverse();
+            lowValues.reverse();
+            closeValues.reverse();
+            volumeValues.reverse();
+            new Chart("stockChart", {
+                type: "line",
+                data: {
+                    labels: xValues,
+                    
+                    datasets: [
+                        //Open Values
+                        {
+                            fill: false,
+                            lineTension: 0,
+                            backgroundColor: "rgba(0,100,0,1)",
+                            borderColor: "rgba(0,100,0,1)",
+                            pointRadius: 2,
+                            data: openValues
+                        },
+                        //High Values
+                        {
+                            fill: false,
+                            lineTension: 0,
+                            backgroundColor: "rgba(100,0,0,1)",
+                            borderColor: "rgba(100,0,0,1)",
+                            pointRadius: 2,
+                            data: highValues
+                        },
+                        //Low Values
+                        {
+                            fill: false,
+                            lineTension: 0,
+                            backgroundColor: "rgba(100,100,0,1)",
+                            borderColor: "rgba(100,100,0,1)",
+                            pointRadius: 2,
+                            data: lowValues
+                        },
+
+                        //Close Values
+                        {
+                            fill: false,
+                            lineTension: 0,
+                            backgroundColor: "rgba(100,100,100,1)",
+                            borderColor: "rgba(100,100,100,1)",
+                            pointRadius: 2,
+                            data: closeValues
+                        },
+                    
+                        
+
+                ]
+                },
+                options: {
+                    legend: { display: false },
+                    scales: {
+                        
+                        yAxes: [{ ticks: { min: 0, max: 200, stepSize:25 } }],
+                    }
+                }
+            });
+        </script>
+
+
+
+
+</main>
+{% endblock %}
